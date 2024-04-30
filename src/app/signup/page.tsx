@@ -1,10 +1,13 @@
 "use client";
-
 import FormBtn from "@/components/FromBtn";
 import Input from "@/components/Input";
 import { User } from "@/utils/type";
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 export default function SignUpPage() {
   const [user, setUser] = useState<User>({
@@ -13,13 +16,32 @@ export default function SignUpPage() {
     phone: "",
     password: "",
   });
+  const [loading, setLoading] = useState<Boolean>(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const router = useRouter();
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    try {
+      event.preventDefault();
+      setLoading(true);
+      let response = await axios.post("/api/users/signup", user);
+
+      if (response.data.success) {
+        router.push("/login");
+      } else {
+        toast.error(response.data.error);
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error("something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="h-screen flex justify-center items-center">
+      <Toaster />
       <form className="border-2 rounded-md p-6" onSubmit={handleSubmit}>
         <h1 className="font-bold text-2xl text-center">SignUp</h1>
         <Input
@@ -50,7 +72,13 @@ export default function SignUpPage() {
           input={user.password}
           setInput={setUser}
         />
-        <FormBtn title="Submit" />
+        {loading ? (
+          <div className="text-center">
+            <Spinner />
+          </div>
+        ) : (
+          <FormBtn title="Submit" />
+        )}
         <div className="text-center my-3">
           <Link href="/login">Alredy have an account</Link>
         </div>

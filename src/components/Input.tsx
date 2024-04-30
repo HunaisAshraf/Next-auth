@@ -23,6 +23,7 @@ export default function Input({
         className="p-2 rounded-sm text-black outline-none"
         onChange={handleChange}
         value={input}
+        required
       />
     </div>
   );
