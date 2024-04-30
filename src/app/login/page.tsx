@@ -1,12 +1,17 @@
 "use client";
 import FormBtn from "@/components/FromBtn";
 import Input from "@/components/Input";
+import { User } from "@/utils/type";
 import Link from "next/link";
 import { useState } from "react";
 
+
+
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<User>({
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -18,15 +23,17 @@ export default function LoginPage() {
         <h1 className="font-bold text-2xl text-center">Login</h1>
         <Input
           type="email"
+          field="email"
           placeholder="Email"
-          input={email}
-          setInput={setEmail}
+          input={user.email}
+          setInput={setUser}
         />
         <Input
           type="password"
+          field="password"
           placeholder="Password"
-          input={password}
-          setInput={setPassword}
+          input={user.password}
+          setInput={setUser}
         />
         <FormBtn title="Submit" />
         <div className="text-center my-3">
